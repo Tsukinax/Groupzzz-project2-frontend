@@ -1,0 +1,711 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "username": "user1",
+      "name": "Somchai",
+      "surname": "Jaidee",
+      "email": "somchai@example.com",
+      "province": "Chiang Mai",
+      "level": 1,
+      "status": "Active",
+      "image": "/images/profile1.jpg",
+      "badges": []
+    },
+    {
+      "id": 2,
+      "username": "user2",
+      "name": "Natcha",
+      "surname": "Wongsiri",
+      "email": "natcha@example.com",
+      "province": "Bangkok",
+      "level": 3,
+      "status": "Active",
+      "image": "/images/profile2.jpg",
+      "badges": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": 3,
+      "username": "user3",
+      "name": "Anan",
+      "surname": "Prasert",
+      "email": "anan@example.com",
+      "province": "Chiang Mai",
+      "level": 2,
+      "status": "Active",
+      "image": "/images/profile1.jpg",
+      "badges": [
+        1
+      ]
+    },
+    {
+      "id": 4,
+      "username": "user4",
+      "name": "Pimchanok",
+      "surname": "Saelim",
+      "email": "pimchanok@example.com",
+      "province": "Phuket",
+      "level": 4,
+      "status": "Active",
+      "image": "/images/profile2.jpg",
+      "badges": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "id": 5,
+      "username": "user5",
+      "name": "Krit",
+      "surname": "Thongdee",
+      "email": "krit@example.com",
+      "province": "Khon Kaen",
+      "level": 1,
+      "status": "Inactive",
+      "image": "/images/profile1.jpg",
+      "badges": []
+    },
+    {
+      "id": 6,
+      "username": "user6",
+      "name": "Siriporn",
+      "surname": "Chaiyo",
+      "email": "siriporn@example.com",
+      "province": "Bangkok",
+      "level": 2,
+      "status": "Active",
+      "image": "/images/profile2.jpg",
+      "badges": [
+        1
+      ]
+    },
+    {
+      "id": 7,
+      "username": "user7",
+      "name": "Thanakorn",
+      "surname": "Meesuk",
+      "email": "thanakorn@example.com",
+      "province": "Songkhla",
+      "level": 3,
+      "status": "Active",
+      "image": "/images/profile1.jpg",
+      "badges": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": 8,
+      "username": "user8",
+      "name": "Kanya",
+      "surname": "Boonmee",
+      "email": "kanya@example.com",
+      "province": "Chiang Rai",
+      "level": 1,
+      "status": "Inactive",
+      "image": "/images/profile2.jpg",
+      "badges": []
+    },
+    {
+      "id": 9,
+      "username": "user9",
+      "name": "Weerachai",
+      "surname": "Sooksan",
+      "email": "weerachai@example.com",
+      "province": "Nakhon Ratchasima",
+      "level": 4,
+      "status": "Active",
+      "image": "/images/profile1.jpg",
+      "badges": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "id": 10,
+      "username": "user10",
+      "name": "Ploy",
+      "surname": "Rattana",
+      "email": "ploy@example.com",
+      "province": "Bangkok",
+      "level": 2,
+      "status": "Active",
+      "image": "/images/profile2.jpg",
+      "badges": [
+        1
+      ]
+    },
+    {
+      "id": 11,
+      "username": "user11",
+      "name": "Chaiwat",
+      "surname": "Nilsen",
+      "email": "chaiwat@example.com",
+      "province": "Chiang Mai",
+      "level": 1,
+      "status": "Active",
+      "image": "/images/profile1.jpg",
+      "badges": []
+    },
+    {
+      "id": 12,
+      "username": "user12",
+      "name": "Suda",
+      "surname": "Kaewkla",
+      "email": "suda@example.com",
+      "province": "Phuket",
+      "level": 3,
+      "status": "Inactive",
+      "image": "/images/profile2.jpg",
+      "badges": [
+        1,
+        2
+      ]
+    },
+    {
+      "id": 13,
+      "username": "user13",
+      "name": "Nopporn",
+      "surname": "Srisuk",
+      "email": "nopporn@example.com",
+      "province": "Khon Kaen",
+      "level": 2,
+      "status": "Active",
+      "image": "/images/profile1.jpg",
+      "badges": [
+        1
+      ]
+    },
+    {
+      "id": 14,
+      "username": "user14",
+      "name": "Wanida",
+      "surname": "Chanpen",
+      "email": "wanida@example.com",
+      "province": "Songkhla",
+      "level": 4,
+      "status": "Active",
+      "image": "/images/profile2.jpg",
+      "badges": [
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "id": 15,
+      "username": "user15",
+      "name": "Peerapat",
+      "surname": "Yodsri",
+      "email": "peerapat@example.com",
+      "province": "Chiang Rai",
+      "level": 1,
+      "status": "Active",
+      "image": "/images/profile1.jpg",
+      "badges": []
+    }
+  ],
+  "levels": [
+    {
+      "id": 1,
+      "name": "Level 1 — Addition & Subtraction",
+      "pass_score": 60,
+      "description": "Adding and subtracting integers is the starting level for everyone"
+    },
+    {
+      "id": 2,
+      "name": "Level 2 — Multiplication & Division",
+      "pass_score": 70,
+      "description": "Multiply and divide integers, including multiplication tables"
+    },
+    {
+      "id": 3,
+      "name": "Level 3 — Fractions & Decimals",
+      "pass_score": 80,
+      "description": "Fractions and Decimals: Addition, Subtraction, Multiplication, and Division of Fractions"
+    },
+    {
+      "id": 4,
+      "name": "Level 4 — Basic Algebra",
+      "pass_score": 90,
+      "description": "Introduction to Algebra: Solving Equations for x"
+    }
+  ],
+  "benefits": [
+    {
+      "id": 1,
+      "level_id": 1,
+      "title": "Do basic exercises",
+      "description": "Practice addition and subtraction problems an unlimited number of times."
+    },
+    {
+      "id": 2,
+      "level_id": 1,
+      "title": "Watch the Level 1 lesson video",
+      "description": "Access addition and subtraction tutorial video for Level 1"
+    },
+    {
+      "id": 3,
+      "level_id": 1,
+      "title": "Passed the level advancement exam",
+      "description": "You can take the exam to advance to Level 2 at any time"
+    },
+    {
+      "id": 4,
+      "level_id": 2,
+      "title": "All services and benefits of Level 1",
+      "description": "You get everything available at Level 1"
+    },
+    {
+      "id": 5,
+      "level_id": 2,
+      "title": "View the detailed solution",
+      "description": "View the step-by-step solution after submitting your answer"
+    },
+    {
+      "id": 6,
+      "level_id": 2,
+      "title": "Multiplication and division problem bank",
+      "description": "Multiplication and division problems with selectable difficulty levels"
+    },
+    {
+      "id": 7,
+      "level_id": 3,
+      "title": "All services and benefits of Level 2",
+      "description": "You get everything available at Level 2"
+    },
+    {
+      "id": 8,
+      "level_id": 3,
+      "title": "Summary of Fraction Formulas",
+      "description": "Download the summary sheet for fractions and decimals formulas"
+    },
+    {
+      "id": 9,
+      "level_id": 3,
+      "title": "Historical exam results statistics",
+      "description": "View the graph of your score progression"
+    },
+    {
+      "id": 10,
+      "level_id": 4,
+      "title": "All services and benefits of Level 3",
+      "description": "You get everything available at Level 3"
+    },
+    {
+      "id": 11,
+      "level_id": 4,
+      "title": "Advanced algebra problems",
+      "description": "Access the most difficult set of equation problems in the system"
+    },
+    {
+      "id": 12,
+      "level_id": 4,
+      "title": "Expert badge",
+      "description": "The highest-level badge is displayed on the profile page"
+    }
+  ],
+  "services": [
+    {
+      "id": 1,
+      "level_id": 1,
+      "name": "Basic calculator",
+      "description": "Addition, subtraction, multiplication, and division of integers"
+    },
+    {
+      "id": 2,
+      "level_id": 1,
+      "name": "Addition and subtraction problem bank",
+      "description": "Addition and subtraction practice problems with answers"
+    },
+    {
+      "id": 3,
+      "level_id": 1,
+      "name": "Multiplication table",
+      "description": "View the multiplication tables for 2 through 12"
+    },
+    {
+      "id": 4,
+      "level_id": 2,
+      "name": "Factorization tool",
+      "description": "Automatically factorize integers"
+    },
+    {
+      "id": 5,
+      "level_id": 2,
+      "name": "Daily Multiplication and Division Problems",
+      "description": "Random multiplication and division problems generated daily"
+    },
+    {
+      "id": 6,
+      "level_id": 2,
+      "name": "Time yourself while solving the problems",
+      "description": "Practice mental math speed"
+    },
+    {
+      "id": 7,
+      "level_id": 3,
+      "name": "Fraction calculator",
+      "description": "Calculate fractions and show the steps"
+    },
+    {
+      "id": 8,
+      "level_id": 3,
+      "name": "Convert fractions to decimals",
+      "description": "Convertible back and forth in both directions"
+    },
+    {
+      "id": 9,
+      "level_id": 3,
+      "name": "Fraction Problem Bank",
+      "description": "Multi-level fraction and decimal problems"
+    },
+    {
+      "id": 10,
+      "level_id": 4,
+      "name": "Equation solver",
+      "description": "Solve the equation for x and explain step-by-step"
+    },
+    {
+      "id": 11,
+      "level_id": 4,
+      "name": "Plot the graph of the equation",
+      "description": "Plot a graph from the entered equation"
+    },
+    {
+      "id": 12,
+      "level_id": 4,
+      "name": "Algebra Tutor",
+      "description": "A system that recommends problems based on the learner's weaknesses"
+    }
+  ],
+  "questions": [
+    {
+      "id": 1,
+      "level_id": 1,
+      "question": "What is 5 + 7?",
+      "choices": [
+        "10",
+        "11",
+        "12",
+        "13"
+      ],
+      "correct_answer": "12"
+    },
+    {
+      "id": 2,
+      "level_id": 1,
+      "question": "What is 9 - 4?",
+      "choices": [
+        "4",
+        "5",
+        "6",
+        "3"
+      ],
+      "correct_answer": "5"
+    },
+    {
+      "id": 3,
+      "level_id": 1,
+      "question": "What is 12 + 8?",
+      "choices": [
+        "18",
+        "19",
+        "20",
+        "21"
+      ],
+      "correct_answer": "20"
+    },
+    {
+      "id": 4,
+      "level_id": 1,
+      "question": "What is 15 - 6?",
+      "choices": [
+        "9",
+        "8",
+        "10",
+        "7"
+      ],
+      "correct_answer": "9"
+    },
+    {
+      "id": 5,
+      "level_id": 1,
+      "question": "What is 23 + 17?",
+      "choices": [
+        "38",
+        "39",
+        "40",
+        "41"
+      ],
+      "correct_answer": "40"
+    },
+    {
+      "id": 6,
+      "level_id": 2,
+      "question": "What is 8 × 9?",
+      "choices": [
+        "64",
+        "70",
+        "72",
+        "81"
+      ],
+      "correct_answer": "72"
+    },
+    {
+      "id": 7,
+      "level_id": 2,
+      "question": "What is 56 ÷ 8?",
+      "choices": [
+        "6",
+        "7",
+        "8",
+        "9"
+      ],
+      "correct_answer": "7"
+    },
+    {
+      "id": 8,
+      "level_id": 2,
+      "question": "What is 12 × 5?",
+      "choices": [
+        "50",
+        "55",
+        "60",
+        "65"
+      ],
+      "correct_answer": "60"
+    },
+    {
+      "id": 9,
+      "level_id": 2,
+      "question": "What is 144 ÷ 12?",
+      "choices": [
+        "10",
+        "11",
+        "12",
+        "13"
+      ],
+      "correct_answer": "12"
+    },
+    {
+      "id": 10,
+      "level_id": 2,
+      "question": "What is 100 ÷ 4?",
+      "choices": [
+        "20",
+        "25",
+        "30",
+        "35"
+      ],
+      "correct_answer": "25"
+    },
+    {
+      "id": 11,
+      "level_id": 3,
+      "question": "What is 1/2 + 1/4?",
+      "choices": [
+        "1/4",
+        "2/4",
+        "3/4",
+        "1"
+      ],
+      "correct_answer": "3/4"
+    },
+    {
+      "id": 12,
+      "level_id": 3,
+      "question": "What is 0.5 + 0.25?",
+      "choices": [
+        "0.65",
+        "0.7",
+        "0.75",
+        "0.8"
+      ],
+      "correct_answer": "0.75"
+    },
+    {
+      "id": 13,
+      "level_id": 3,
+      "question": "What is 1.5 + 2.25?",
+      "choices": [
+        "3.5",
+        "3.75",
+        "4.0",
+        "4.25"
+      ],
+      "correct_answer": "3.75"
+    },
+    {
+      "id": 14,
+      "level_id": 3,
+      "question": "What is 5.5 - 2.25?",
+      "choices": [
+        "3.0",
+        "3.25",
+        "3.5",
+        "3.75"
+      ],
+      "correct_answer": "3.25"
+    },
+    {
+      "id": 15,
+      "level_id": 3,
+      "question": "What is 1/2 × 1/2?",
+      "choices": [
+        "1/8",
+        "1/4",
+        "1/2",
+        "1"
+      ],
+      "correct_answer": "1/4"
+    },
+    {
+      "id": 16,
+      "level_id": 4,
+      "question": "Solve for x: x + 5 = 12",
+      "choices": [
+        "5",
+        "6",
+        "7",
+        "8"
+      ],
+      "correct_answer": "7"
+    },
+    {
+      "id": 17,
+      "level_id": 4,
+      "question": "Solve for x: 3x = 15",
+      "choices": [
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "correct_answer": "5"
+    },
+    {
+      "id": 18,
+      "level_id": 4,
+      "question": "What is x if x/2 = 9?",
+      "choices": [
+        "16",
+        "17",
+        "18",
+        "19"
+      ],
+      "correct_answer": "18"
+    },
+    {
+      "id": 19,
+      "level_id": 4,
+      "question": "Simplify: 3x + 2x",
+      "choices": [
+        "4x",
+        "5x",
+        "6x",
+        "5x^2"
+      ],
+      "correct_answer": "5x"
+    },
+    {
+      "id": 20,
+      "level_id": 4,
+      "question": "Solve for x: 5x = 2x + 9",
+      "choices": [
+        "2",
+        "3",
+        "4",
+        "5"
+      ],
+      "correct_answer": "3"
+    }
+  ],
+  "examHistory": [
+    {
+      "id": 1,
+      "user_id": 2,
+      "level_id": 1,
+      "score": 80,
+      "result": "pass",
+      "taken_at": "2026-08-02T09:15:00"
+    },
+    {
+      "id": 2,
+      "user_id": 2,
+      "level_id": 2,
+      "score": 75,
+      "result": "pass",
+      "taken_at": "2026-08-06T14:40:00"
+    },
+    {
+      "id": 3,
+      "user_id": 2,
+      "level_id": 3,
+      "score": 60,
+      "result": "fail",
+      "taken_at": "2026-08-11T10:05:00"
+    },
+    {
+      "id": 4,
+      "user_id": 3,
+      "level_id": 1,
+      "score": 100,
+      "result": "pass",
+      "taken_at": "2026-08-03T16:20:00"
+    },
+    {
+      "id": 5,
+      "user_id": 3,
+      "level_id": 2,
+      "score": 40,
+      "result": "fail",
+      "taken_at": "2026-08-09T11:30:00"
+    },
+    {
+      "id": 6,
+      "user_id": 4,
+      "level_id": 3,
+      "score": 90,
+      "result": "pass",
+      "taken_at": "2026-08-08T13:00:00"
+    },
+    {
+      "id": 7,
+      "user_id": 7,
+      "level_id": 2,
+      "score": 85,
+      "result": "pass",
+      "taken_at": "2026-08-05T08:45:00"
+    },
+    {
+      "id": 8,
+      "user_id": 9,
+      "level_id": 3,
+      "score": 95,
+      "result": "pass",
+      "taken_at": "2026-08-10T15:10:00"
+    },
+    {
+      "id": 9,
+      "user_id": 1,
+      "level_id": 1,
+      "score": 40,
+      "result": "fail",
+      "taken_at": "2026-08-12T19:25:00"
+    },
+    {
+      "id": 10,
+      "user_id": 1,
+      "level_id": 1,
+      "score": 20,
+      "result": "fail",
+      "taken_at": "2026-08-14T20:50:00"
+    }
+  ]
+}
