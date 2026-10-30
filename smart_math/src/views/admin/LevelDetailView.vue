@@ -1,10 +1,6 @@
 <script setup lang="ts">
-import { useRoute } from 'vue-router';
-
 import { useLevelStore } from '@/stores/level';
 import { storeToRefs } from 'pinia'
-
-const route = useRoute();
 const levelStore=useLevelStore()
 const { currentLevel: level } = storeToRefs(levelStore)
 
@@ -20,7 +16,7 @@ const { currentLevel: level } = storeToRefs(levelStore)
                 <span class="px-2.5 py-0.5 bg-blue-600 text-white text-xs rounded-xl">Pass: {{ level.passScore }}</span>
             </div>
             
-            <div class="gridgrid-cols-1 md:grid-cols-2 gap-4 mt-6 pb-5">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 pb-5">
                 <div class="bg-zinc-900 p-5 text-zinc-400 border border-zinc-800 rounded-xl">
                     <div class="pb-3 text-white">Description</div>
                     <p class="text-white pb-4">{{ level.description }}</p>
