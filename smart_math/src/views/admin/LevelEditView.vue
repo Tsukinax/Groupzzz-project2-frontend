@@ -11,6 +11,8 @@ import { useMessageStore } from '@/stores/message'
 import LevelService from '@/services/LevelService'
 import InputText from '@/components/InputText.vue'
 import ErrorMessage from '@/components/ErrorMessage.vue'
+import ItemRowEditor from '@/components/ItemRowEditor.vue'
+import type { ItemForm } from '@/types/level'
 
 
 const router = useRouter()
@@ -75,6 +77,88 @@ function backToDetail() {
   }
 }
 
+const isAddingBenefit = ref(false)
+const isAddingService = ref(false)
+
+function reloadLevel(levelId: number) {
+  return LevelService.getLevel(levelId).then((response) => {
+    levelStore.setCurrentLevel(response.data)
+  })
+}
+
+function addBenefit(payload: ItemForm) {
+  if (!level.value) {
+    return
+  }
+  const levelId = level.value.id
+  LevelService.addBenefit(levelId, { title: payload.name, description: payload.description })
+    .then(() => reloadLevel(levelId))
+    .then(() => {
+      isAddingBenefit.value = false
+      showMessage('The benefit was added')
+    })
+    .catch(() => showMessage('Could not add the benefit'))
+}
+
+function saveBenefit(id: number, payload: ItemForm) {
+  if (!level.value) {
+    return
+  }
+  const levelId = level.value.id
+  LevelService.updateBenefit(id, { title: payload.name, description: payload.description })
+    .then(() => reloadLevel(levelId))
+    .then(() => showMessage('The benefit was saved'))
+    .catch(() => showMessage('Could not save the benefit'))
+}
+
+function deleteBenefit(id: number) {
+  if (!level.value) {
+    return
+  }
+  const levelId = level.value.id
+  LevelService.deleteBenefit(id)
+    .then(() => reloadLevel(levelId))
+    .then(() => showMessage('The benefit was deleted'))
+    .catch(() => showMessage('Could not delete the benefit'))
+}
+
+function addService(payload: ItemForm) {
+  if (!level.value) {
+    return
+  }
+  const levelId = level.value.id
+  LevelService.addService(levelId, { name: payload.name, description: payload.description })
+    .then(() => reloadLevel(levelId))
+    .then(() => {
+      isAddingService.value = false
+      showMessage('The service was added')
+    })
+    .catch(() => showMessage('Could not add the service'))
+}
+
+function saveService(id: number, payload: ItemForm) {
+  if (!level.value) {
+    return
+  }
+  const levelId = level.value.id
+  LevelService.updateService(id, { name: payload.name, description: payload.description })
+    .then(() => reloadLevel(levelId))
+    .then(() => showMessage('The service was saved'))
+    .catch(() => showMessage('Could not save the service'))
+}
+
+function deleteService(id: number) {
+  if (!level.value) {
+    return
+  }
+  const levelId = level.value.id
+  LevelService.deleteService(id)
+    .then(() => reloadLevel(levelId))
+    .then(() => showMessage('The service was deleted'))
+    .catch(() => showMessage('Could not delete the service'))
+}
+
+
 </script>
 <template>
     <div class="px-10 pt-3">
@@ -106,6 +190,62 @@ function backToDetail() {
                         <button type="button" class="px-5 py-2 bg-zinc-800 text-white hover:bg-zinc-700 font-medium rounded-xl" @click="backToDetail">Cancel</button>
                 </div>
             </form>
+            <div class="bg-zinc-900 p-6 mt-6 border border-zinc-800 rounded-xl space-y-3">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-white text-lg">Benefits</h2>
+                    <button v-if="!isAddingBenefit" type="button" class="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-white text-sm rounded-xl" @click="isAddingBenefit = true">
+                        + Add benefit
+                    </button>
+                </div>
+                <ItemRowEditor
+                    v-for="b in level.benefits"
+                    :key="b.id"
+                    :input-id="'benefit-' + b.id"
+                    name-label="Title"
+                    :initial-name="b.title"
+                    :initial-description="b.description"
+                    @save="saveBenefit(b.id, $event)"
+                    @delete="deleteBenefit(b.id)"
+                />
+                <ItemRowEditor
+                    v-if="isAddingBenefit"
+                    input-id="benefit-new"
+                    name-label="Title"
+                    is-new
+                    @save="addBenefit"
+                    @cancel="isAddingBenefit = false"
+                />
+                <p v-if="level.benefits.length === 0 && !isAddingBenefit" class="text-zinc-500 text-sm">No benefits yet.</p>
+            </div>
+
+            <div class="bg-zinc-900 p-6 mt-6 border border-zinc-800 rounded-xl space-y-3">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-white text-lg">Services</h2>
+                    <button v-if="!isAddingService" type="button" class="px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 text-white text-sm rounded-xl" @click="isAddingService = true">
+                        + Add service
+                    </button>
+                </div>
+                <ItemRowEditor
+                    v-for="s in level.services"
+                    :key="s.id"
+                    :input-id="'service-' + s.id"
+                    name-label="Name"
+                    :initial-name="s.name"
+                    :initial-description="s.description"
+                    @save="saveService(s.id, $event)"
+                    @delete="deleteService(s.id)"
+                />
+                <ItemRowEditor
+                    v-if="isAddingService"
+                    input-id="service-new"
+                    name-label="Name"
+                    is-new
+                    @save="addService"
+                    @cancel="isAddingService = false"
+                />
+                <p v-if="level.services.length === 0 && !isAddingService" class="text-zinc-500 text-sm">No services yet.</p>
+            </div>
+
         </div>
         <div v-else>
             <h1 class="text-white text-2xl">Level not found</h1>
