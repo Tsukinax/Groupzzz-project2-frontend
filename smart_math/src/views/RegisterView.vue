@@ -4,11 +4,10 @@ import { useRouter } from 'vue-router'
 import { useField, useForm } from 'vee-validate'
 import * as yup from 'yup'
 import InputText from '@/components/InputText.vue'
-import ErrorMessage from '@/components/ErrorMessage.vue'
 import ImageUpload from '@/components/ImageUpload.vue'
+import ProvinceSelect from '@/components/ProvinceSelect.vue'
 import UploadService from '@/services/UploadService'
 import { useAuthStore } from '@/stores/auth'
-import { PROVINCES } from '@/constants/provinces'
 import { getErrorMessage } from '@/utils/errorMessage'
 
 interface RegisterValues {
@@ -140,18 +139,7 @@ const labelClass = 'mb-1.5 block text-sm font-medium text-zinc-400'
 
         <div>
           <label for="province" :class="labelClass">Province</label>
-          <select
-            id="province"
-            v-model="province"
-            class="w-full rounded-xl border bg-zinc-950 px-3 py-1.5 text-white outline-none"
-            :class="errors.province ? 'border-red-500' : 'border-zinc-700 hover:border-zinc-500'"
-          >
-            <option value="" disabled>Select province</option>
-            <option v-for="item in PROVINCES" :key="item" :value="item">{{ item }}</option>
-          </select>
-          <ErrorMessage v-if="errors.province" id="province-error" class="mt-1 text-sm text-red-400">
-            {{ errors.province }}
-          </ErrorMessage>
+          <ProvinceSelect id="province" v-model="province" :error="errors.province" />
         </div>
 
         <div>
