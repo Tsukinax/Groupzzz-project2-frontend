@@ -90,6 +90,17 @@ const router = createRouter({
       component: () => import('../views/eLearning/eLearningView.vue'),
       meta: { requiresAuth: true },
     },
+    {
+      path: '/404/:resource',
+      name: '404-resource-view',
+      component: () => import('../views/NotFoundView.vue'),
+      props: true,
+    },
+    {
+      path: '/network-error',
+      name: 'network-error-view',
+      component: () => import('../views/NetworkErrorView.vue'),
+    },
 
     ...userRoutes,
   ],
