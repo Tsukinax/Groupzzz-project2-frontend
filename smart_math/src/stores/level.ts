@@ -40,13 +40,6 @@ export const useLevelStore = defineStore('level', () => {
     }
   }
 
-  function updateLevel(updatedLevel: Level){
-    const index=levels.value.findIndex((level)=>level.id === updatedLevel.id)
-    if (index!== -1){
-      levels.value[index]={...updatedLevel}
-    }
-
-  }
 
   return {
     levels,
@@ -57,6 +50,5 @@ export const useLevelStore = defineStore('level', () => {
     getBenefitsByLevel,
     getServicesByLevel,
     setCurrentLevel,
-    updateLevel,
   }
 })
