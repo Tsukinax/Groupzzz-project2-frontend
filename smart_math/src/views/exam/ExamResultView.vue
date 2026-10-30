@@ -29,7 +29,7 @@ onMounted(() => {
   })
 
   if (passed) {
-    authStore.upgradeLevel(result.level_id)
+    authStore.fetchCurrentUser()
   }
 
   examStore.markResultRecorded()
