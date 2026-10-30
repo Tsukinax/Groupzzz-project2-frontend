@@ -15,10 +15,11 @@ const emptyUser: User = {
     surname:'',
     email:'',
     level: 1,
+    levelName: '',
     province: '',
     status: 'Active',
     image:'',
-    badges:[],
+    roles: [],
 
 }
 
