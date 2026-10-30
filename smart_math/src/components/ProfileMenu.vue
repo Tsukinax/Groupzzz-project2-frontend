@@ -14,7 +14,7 @@ const emit = defineEmits<{
 <template>
   <div class="flex items-center gap-3">
     <RouterLink
-      :to="{ name: 'user-profile', params: { id: user.id } }"
+      :to="{ name: 'user-profile' }"
       class="flex items-center gap-2 rounded-full py-1 pr-3 pl-1 transition hover:bg-zinc-800"
     >
       <img
