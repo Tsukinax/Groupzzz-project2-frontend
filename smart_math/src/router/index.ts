@@ -3,6 +3,25 @@ import { useUserStore } from '@/stores/user'
 import { useAuthStore } from '@/stores/auth'
 
 import { userRoutes } from './routes/user.routes'
+import type { RouteLocationNormalized } from 'vue-router'
+import LevelService from '@/services/LevelService'
+import { useLevelStore } from '@/stores/level'
+
+function loadLevel(to: RouteLocationNormalized) {
+  const id = parseInt(to.params.id as string)
+  const levelStore = useLevelStore()
+  return LevelService.getLevel(id)
+    .then((response) => {
+      levelStore.setCurrentLevel(response.data)
+    })
+    .catch((error) => {
+      if (error.response && error.response.status === 404) {
+        return { name: '404-resource-view', params: { resource: 'level' } }
+      } else {
+        return { name: 'network-error-view' }
+      }
+    })
+}
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -59,11 +78,13 @@ const router = createRouter({
           path: 'levels/:id',
           name: 'admin-level',
           component: () => import('../views/admin/LevelDetailView.vue'),
+          beforeEnter: loadLevel,
         },
         {
           path: 'levels/:id/edit',
           name: 'admin-level-edit',
-          component: ()=> import('../views/admin/LevelEditView.vue')
+          component: ()=> import('../views/admin/LevelEditView.vue'),
+          beforeEnter: loadLevel,
         },
         {
           path: 'questions',
@@ -89,6 +110,17 @@ const router = createRouter({
       name: 'learning',
       component: () => import('../views/eLearning/eLearningView.vue'),
       meta: { requiresAuth: true },
+    },
+    {
+      path: '/404/:resource',
+      name: '404-resource-view',
+      component: () => import('../views/NotFoundView.vue'),
+      props: true,
+    },
+    {
+      path: '/network-error',
+      name: 'network-error-view',
+      component: () => import('../views/NetworkErrorView.vue'),
     },
 
     ...userRoutes,
