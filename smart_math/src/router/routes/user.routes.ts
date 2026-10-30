@@ -4,21 +4,25 @@ export const userRoutes: RouteRecordRaw[] = [
   {
     path: '/',
     name: 'landing',
+    meta: { guestOnly: true },
     component: () => import('@/views/LandingView.vue'),
   },
   {
     path: '/login',
     name: 'login',
+    meta: { guestOnly: true },
     component: () => import('@/views/LoginView.vue'),
   },
   {
     path: '/register',
     name: 'register',
+    meta: { guestOnly: true },
     component: () => import('@/views/RegisterView.vue'),
   },
   {
     path: '/user/:id',
     component: () => import('@/views/user/UserLayout.vue'),
+    meta: { requiresAuth: true, userOnly: true },
     children: [
       {
         path: '',

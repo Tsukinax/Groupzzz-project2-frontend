@@ -97,19 +97,19 @@ const router = createRouter({
       path: '/exam/:levelId',
       name: 'exam',
       component: () => import('../views/exam/ExamView.vue'),
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: true, userOnly: true },
     },
     {
       path: '/exam-result',
       name: 'exam-result',
       component: () => import('../views/exam/ExamResultView.vue'),
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: true, userOnly: true },
     },
     {
       path: '/learning/:levelId',
       name: 'learning',
       component: () => import('../views/eLearning/eLearningView.vue'),
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: true, userOnly: true },
     },
     {
       path: '/404/:resource',
@@ -128,24 +128,23 @@ const router = createRouter({
 })
 
 router.beforeEach((to) => {
+  const authStore = useAuthStore()
 
-  if(!to.meta.requiresAuth){
+  if (to.meta.guestOnly && authStore.isLoggedIn) {
+    return authStore.homeRoute
+  }
+  if (!to.meta.requiresAuth) {
     return true
   }
-  const authStore = useAuthStore()
-  const currentUser = authStore.currentUser
-
-  if (!authStore.isLoggedIn || !currentUser) {
+  if (!authStore.isLoggedIn) {
     return { name: 'login' }
   }
   if (to.meta.adminOnly && !authStore.isAdmin) {
-    return { name: 'user-profile', params: { id: currentUser.id } }
+    return authStore.homeRoute
   }
-
-  if(to.meta.userOnly && authStore.isAdmin){
-    return {name:'admin-users'}
+  if (to.meta.userOnly && authStore.isAdmin) {
+    return authStore.homeRoute
   }
-
   return true
 })
 
