@@ -1,4 +1,8 @@
 <script setup lang="ts">import { RouterLink,RouterView } from 'vue-router'
+import { storeToRefs } from 'pinia'
+import { useMessageStore } from '@/stores/message'
+const messageStore = useMessageStore()
+const { message } = storeToRefs(messageStore)
 </script>
 <template>
     <div class="grid grid-cols-1 md:grid-cols-[300px_1fr] min-h-screen bg-zinc-950 text-zinc-100">
@@ -13,6 +17,9 @@
             
         </aside>
         <main class="bg-zinc-900/40 p-4 ">
+            <div v-if="message" id="flashMessage" class="mb-4 px-4 py-3 bg-blue-900/40 border border-blue-700 text-blue-200 rounded-xl">
+                {{ message }}
+            </div>
             <RouterView />
         </main>
 
