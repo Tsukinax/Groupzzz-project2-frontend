@@ -1,5 +1,6 @@
-export interface eLearningContent {
-  level_id: number
+export interface ElearningContent {
+  id: number
   title: string
-  youtube_url: string
+  description: string
+  videoUrl: string
 }
