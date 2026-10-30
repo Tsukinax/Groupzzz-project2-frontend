@@ -23,3 +23,17 @@ export interface Service {
   name: string
   description: string
 }
+
+export interface NewBenefit{
+  title: string
+  description: string
+}
+
+export interface NewService{
+  name: string
+  description: string
+}
+export interface ItemForm{
+  name: string
+  description: string
+}
