@@ -39,7 +39,7 @@ onMounted(async()=>{
                     <div class="flex gap-2">
                         <span class="bg-zinc-800 text-zinc-300 text-xs px-2 py-1 rounded-xl">pass: {{ level.passScore }}</span>
                         <span class="bg-zinc-800 text-zinc-300 text-xs px-2 py-1 rounded-xl">benefits: {{ level.benefits.length }}</span>
-                        <span class="bg-zinc-800 text-zinc-300 text-xs px-2 py-1 rounded-xl">service: {{ level.services.length }}</span>
+                        <span class="bg-zinc-800 text-zinc-300 text-xs px-2 py-1 rounded-xl">services: {{ level.services.length }}</span>
                         
                     </div>
             

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { useRoute,useRouter } from 'vue-router';
-import {computed,onMounted} from 'vue';
+import { useRouter } from 'vue-router';
+
 import { useLevelStore } from '@/stores/level';
 import { ref } from 'vue';
-import type {Level} from '@/types/level'
+
 import { storeToRefs } from 'pinia'
 import { useField, useForm } from 'vee-validate'
 import * as yup from 'yup'
