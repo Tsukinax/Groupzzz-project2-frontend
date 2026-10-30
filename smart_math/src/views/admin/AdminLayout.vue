@@ -1,8 +1,16 @@
-<script setup lang="ts">import { RouterLink,RouterView } from 'vue-router'
+<script setup lang="ts">import { RouterLink,RouterView, useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useMessageStore } from '@/stores/message'
+import { useAuthStore } from '@/stores/auth'
 const messageStore = useMessageStore()
 const { message } = storeToRefs(messageStore)
+const router = useRouter()
+const authStore = useAuthStore()
+
+async function handleLogout() {
+  await authStore.logout()
+  router.push({ name: 'landing' })
+}
 </script>
 <template>
     <div class="grid grid-cols-1 md:grid-cols-[300px_1fr] min-h-screen bg-zinc-950 text-zinc-100">
@@ -14,6 +22,7 @@ const { message } = storeToRefs(messageStore)
                 <RouterLink to="/admin/levels" class="px-3 py-2  text-white" active-class="bg-blue-600 font-medium rounded-xl hover:bg-blue-600/80 hover:text-zinc-100">Levels</RouterLink>
                 <RouterLink to="/admin/questions" class="px-3 py-2  text-white" active-class="bg-blue-600 font-medium rounded-xl hover:bg-blue-600/80 hover:text-zinc-100">Questions</RouterLink>
             </nav>
+            <button type="button" class="mt-6 w-full px-3 py-2 text-left text-zinc-400 hover:text-white" @click="handleLogout">Logout</button>
             
         </aside>
         <main class="bg-zinc-900/40 p-4 ">
