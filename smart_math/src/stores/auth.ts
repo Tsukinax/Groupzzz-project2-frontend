@@ -18,11 +18,7 @@ export const useAuthStore = defineStore('auth', () => {
 
   const isLoggedIn = computed(() => token.value !== null && currentUser.value !== null)
   const isAdmin = computed(() => currentUser.value?.roles.includes('ROLE_ADMIN') ?? false)
-  const homeRoute = computed(() =>
-    isAdmin.value
-      ? { name: 'admin-users' }
-      : { name: 'user-profile', params: { id: currentUser.value?.id } },
-  )
+  const homeRoute = computed(() => ({ name: isAdmin.value ? 'admin-users' : 'user-home' }))
 
   async function login(form: LoginForm) {
     const response = await AuthService.login(form)

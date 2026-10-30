@@ -35,3 +35,11 @@ export interface AuthResponse {
   token: string
   user: User
 }
+
+export interface UserUpdateForm {
+  name: string
+  surname: string
+  email: string
+  province: string
+  image: string
+}

@@ -79,14 +79,14 @@ onMounted(() => {
 
       <div v-if="authStore.currentUser" class="flex justify-center gap-3 mt-6">
         <button
-          @click="router.push({ name: 'user-profile', params: { id: authStore.currentUser.id } })"
+          @click="router.push({ name: 'user-profile' })"
           class="px-5 py-2.5 rounded-lg border border-slate-600 text-slate-200 hover:border-slate-400"
         >
           Back to Profile
         </button>
 
         <button
-          @click="router.push({ name: 'user-history', params: { id: authStore.currentUser.id } })"
+          @click="router.push({ name: 'user-history' })"
           class="px-5 py-2.5 rounded-lg bg-blue-600 text-white hover:bg-blue-700"
         >
           Exam History
