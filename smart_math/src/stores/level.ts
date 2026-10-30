@@ -1,19 +1,22 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import type { Benefit, Level, Service } from '@/types/level'
-import DataService from '@/services/DataService'
+import LevelService from '@/services/LevelService'
 
 export const useLevelStore = defineStore('level', () => {
   const levels = ref<Level[]>([])
-  const benefits = ref<Benefit[]>([])
-  const services = ref<Service[]>([])
+  const currentLevel = ref<Level | null>(null)
   const isLoaded = ref(false)
 
+  function sortItems(level: Level): Level {
+    level.benefits.sort((a, b) => a.id - b.id)
+    level.services.sort((a, b) => a.id - b.id)
+    return level
+  }
+
   async function loadData() {
-    const response = await DataService.getData()
-    levels.value = response.data.levels
-    benefits.value = response.data.benefits
-    services.value = response.data.services
+    const response = await LevelService.getLevels()
+    levels.value = response.data.map(sortItems)
     isLoaded.value = true
   }
 
@@ -22,11 +25,19 @@ export const useLevelStore = defineStore('level', () => {
   }
 
   function getBenefitsByLevel(levelId: number): Benefit[] {
-    return benefits.value.filter((benefit) => benefit.level_id === levelId)
+    return getLevelById(levelId)?.benefits || []
   }
 
   function getServicesByLevel(levelId: number): Service[] {
-    return services.value.filter((service) => service.level_id === levelId)
+    return getLevelById(levelId)?.services || []
+  }
+
+  function setCurrentLevel(level: Level) {
+    currentLevel.value = sortItems(level)
+    const index = levels.value.findIndex((l) => l.id === level.id)
+    if (index !== -1) {
+      levels.value[index] = level
+    }
   }
 
   function updateLevel(updatedLevel: Level){
@@ -39,13 +50,13 @@ export const useLevelStore = defineStore('level', () => {
 
   return {
     levels,
-    benefits,
-    services,
+    currentLevel,
     isLoaded,
     loadData,
     getLevelById,
     getBenefitsByLevel,
     getServicesByLevel,
+    setCurrentLevel,
     updateLevel,
   }
 })
