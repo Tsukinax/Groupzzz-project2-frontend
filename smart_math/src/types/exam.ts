@@ -1,19 +1,32 @@
-export interface Question extends NewQuestion {
-  
+export interface Question {
   id: number
+  question: string
+  choices: string[]
+  correctAnswer: string
+  level: { id: number; name: string }
+}
+
+export interface NewQuestion {
+  question: string
+  choices: string[]
+  correctAnswer: string
+  levelId: number
+}
+
+export interface ExamQuestion {
+  id: number
+  question: string
+  choices: string[]
+}
+
+export interface ExamSubmit {
+  answers: Record<number, string>
 }
 
 export interface ExamResult {
-  id: number
-  level_id: number
-  user_id: number
   score: number
-  result: string
-}
-
-export interface NewQuestion{
-  level_id: number
-  question: string
-  choices: string[]
-  correct_answer: string
+  passed: boolean
+  passScore: number
+  levelUpgraded: boolean
+  currentLevelId: number
 }
