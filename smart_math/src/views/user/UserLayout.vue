@@ -26,8 +26,8 @@ const tabs = [
 
 const userId = computed(() => route.params.id)
 
-function handleLogout() {
-  authStore.logout()
+async function handleLogout() {
+  await authStore.logout()
   router.push({ name: 'landing' })
 }
 </script>
