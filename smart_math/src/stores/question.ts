@@ -1,38 +1,41 @@
-import {defineStore} from 'pinia'
-import {ref} from 'vue'
-import type { Question,NewQuestion } from '@/types/exam'
-import DataService from '@/services/DataService'
+import { defineStore } from 'pinia'
+import { ref } from 'vue'
+import QuestionService from '@/services/QuestionService'
+import type { Question, NewQuestion } from '@/types/exam'
 
+export const useQuestionStore = defineStore('question', () => {
+  const questions = ref<Question[]>([])
+  const isLoaded = ref(false)
 
-export const useQuestionStore = defineStore('question',()=>{
-    const questions = ref<Question[]>([])
-    const isLoaded = ref(false)
-    
-    async function loadQuestions(){
-        try{
-            const response = await DataService.getData()
-            questions.value= response.data.questions
-            isLoaded.value=true
-        } catch(error){
-            console.log(error)
-        }
-            
-    }
-    function getQuestionsByLevel(levelId:number): Question[]{
-        return questions.value.filter((question)=> question.level_id === levelId)
-    }
+  async function loadQuestions() {
+    const response = await QuestionService.getQuestions()
+    questions.value = response.data
+    isLoaded.value = true
+  }
+  function getQuestionsByLevel(levelId: number): Question[] {
+    return questions.value.filter((q) => q.level.id === levelId)
+  }
+  async function addQuestion(payload: NewQuestion) {
+    const response = await QuestionService.addQuestion(payload)
+    questions.value.push(response.data)
+  }
+  async function updateQuestion(id: number, payload: NewQuestion) {
+    const response = await QuestionService.updateQuestion(id, payload)
+    const index = questions.value.findIndex((q) => q.id === id)
+    if (index !== -1) questions.value[index] = response.data
+  }
+  async function deleteQuestion(id: number) {
+    await QuestionService.deleteQuestion(id)
+    questions.value = questions.value.filter((q) => q.id !== id)
+  }
 
-    function addQuestion(payload:NewQuestion){
-        let newId=1
-        if(questions.value.length>0){
-            newId = Math.max(...questions.value.map((question)=>question.id))+1
-        }
-        questions.value.push({id:newId,...payload})
-    }
-    return {questions,isLoaded,loadQuestions,getQuestionsByLevel,addQuestion}
-
+  return {
+    questions,
+    isLoaded,
+    loadQuestions,
+    getQuestionsByLevel,
+    addQuestion,
+    updateQuestion,
+    deleteQuestion,
+  }
 })
-
-
-
-
