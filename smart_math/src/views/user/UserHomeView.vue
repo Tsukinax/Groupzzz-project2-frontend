@@ -45,7 +45,7 @@ const services = computed(() =>
           Study this level
         </RouterLink>
         <RouterLink
-          :to="{ name: 'exam', params: { levelId: level.id } }"
+          :to="{ name: 'exam' }"
           class="rounded-lg bg-blue-600 px-4 py-2 text-center text-sm font-medium text-white transition hover:bg-blue-500"
         >
           Take the exam (pass {{ level.passScore }}%)
