@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useExamStore } from '@/stores/exam'
 
@@ -14,13 +14,18 @@ onMounted(async () => {
   }
 })
 
+const isSubmitting = ref(false)
+
 async function handleSubmit() {
-  if (!examStore.allAnswered) return
+  if (!examStore.allAnswered || isSubmitting.value) return
+  isSubmitting.value = true
   try {
     await examStore.submitExam()
     router.push({ name: 'exam-result' })
   } catch {
     router.push({ name: 'network-error-view' })
+  } finally {
+    isSubmitting.value = false
   }
 }
 </script>
@@ -82,10 +87,10 @@ async function handleSubmit() {
         <button
           v-else
           @click="handleSubmit"
-          :disabled="!examStore.allAnswered"
+          :disabled="!examStore.allAnswered || isSubmitting"
           class="px-5 py-2.5 rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-blue-600"
         >
-          Submit
+          {{ isSubmitting ? 'Submitting...' : 'Submit' }}
         </button>
       </div>
     </div>
