@@ -1,44 +1,45 @@
 <script setup lang="ts">
-import {computed,onMounted} from 'vue'
-import { useUserStore } from '@/stores/user';
-import { useHistoryStore } from '@/stores/history';
+import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
+import ExamHistoryTable from '@/components/ExamHistoryTable.vue'
+import ExamService from '@/services/ExamService'
+import { useUserStore } from '@/stores/user'
+import type { ExamAttempt } from '@/types/history'
 
+const router = useRouter()
 const userStore = useUserStore()
-const historyStore = useHistoryStore()
-onMounted(async () =>{
-    if (!historyStore.isLoaded){
-        await historyStore.loadHistory()
-    }
-})
-const examHistory = computed(()=>{
-    const user = userStore.currentUser;
-    if (user === null){
-        return []
-    }
-    return historyStore.getAttemptsByUser(user.id)
+const examHistory = ref<ExamAttempt[]>([])
+
+onMounted(async () => {
+  const user = userStore.currentUser
+  if (user === null) {
+    return
+  }
+  try {
+    const response = await ExamService.getUserHistory(user.id)
+    examHistory.value = response.data
+  } catch {
+    router.push({ name: 'network-error-view' })
+  }
 })
 </script>
+
 <template>
-    <div class="space-y-6">
-        <div class="bg-zinc-900 p-6 flex items-center gap-4 border border-zinc-800 rounded-xl" v-if="userStore.currentUser">
-            <span class="text-zinc-400">Current Level</span>
-            <span class="px-2.5 py-0.5 bg-blue-600 text-white rounded-xl">{{ userStore.levelLabel }}</span>
-            <span class="text-zinc-400 ml-auto">Exam History: {{ examHistory.length }}</span>
-        </div>
-        <div class="bg-zinc-900 p-6 border border-zinc-800 rounded-xl">
-            <h2 class="text-white mb-4">Exam History</h2>
-            <div class="flex text-zinc-400 pb-2 border-b border-zinc-800">
-                <span class="w-32">Level</span>
-                <span class="w-32">Score</span>
-                <span class="w-32">Result</span>
-                <span class="w-32"></span>
-            </div>
-            <div v-for="result in examHistory" :key="result.id" class="flex items-center py-2 text-white">
-                <span class="w-32">{{ result.level_id }}</span>
-                <span class="w-32">{{ result.score }}</span>
-                <span class="w-32" :class="result.result === 'pass' ? 'text-green-400' : 'text-red-400'">{{ result.result }}</span>
-            </div>
-            <p class="text-zinc-500 py-4" v-if="examHistory.length === 0">No exam history.</p>
-        </div>
+  <div class="space-y-6">
+    <div
+      v-if="userStore.currentUser"
+      class="flex flex-wrap items-center gap-4 rounded-xl border border-zinc-800 bg-zinc-900 p-6"
+    >
+      <span class="text-zinc-400">Current Level</span>
+      <span class="rounded-xl bg-blue-600 px-2.5 py-0.5 text-white">
+        {{ userStore.currentUser.levelName }}
+      </span>
+      <span class="ml-auto text-zinc-400">Exam History: {{ examHistory.length }}</span>
     </div>
+
+    <div class="rounded-xl border border-zinc-800 bg-zinc-900 p-6">
+      <h2 class="mb-4 text-white">Exam History</h2>
+      <ExamHistoryTable :attempts="examHistory" />
+    </div>
+  </div>
 </template>
