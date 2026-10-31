@@ -39,7 +39,7 @@ const services = computed(() =>
 
       <div class="mt-6 flex flex-col gap-3 sm:flex-row">
         <RouterLink
-          :to="{ name: 'learning', params: { levelId: level.id } }"
+          :to="{ name: 'learning' }"
           class="rounded-lg border border-zinc-600 px-4 py-2 text-center text-sm font-medium text-zinc-200 transition hover:border-zinc-400"
         >
           Study this level
