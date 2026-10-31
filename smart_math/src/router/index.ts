@@ -30,7 +30,7 @@ const router = createRouter({
       path: '/admin',
       name: 'admin',
       component: () => import('../views/admin/AdminLayout.vue'),
-      meta:{requiresAuth: true, adminOnly:true},
+      meta: { requiresAuth: true, adminOnly: true },
       children: [
         {
           path: 'users',
@@ -38,36 +38,37 @@ const router = createRouter({
           component: () => import('../views/admin/UserListView.vue'),
         },
         {
-          path:'users/:id',
+          path: 'users/:id',
           name: 'admin-user',
-          component: () => import('../views/admin/UserLayout.vue'), 
-          beforeEnter: async(to)=>{
+          component: () => import('../views/admin/UserLayout.vue'),
+          beforeEnter: async (to) => {
             const userStore = useUserStore()
-            if(!userStore.isLoaded){
+            if (!userStore.isLoaded) {
               await userStore.loadUsers()
             }
-            const user = userStore.users.find((u)=> u.id === Number(to.params.id))
-            if (!user){
-              return {name:'admin-users'}
+            const user = userStore.users.find((u) => u.id === Number(to.params.id))
+            if (!user) {
+              return { name: 'admin-users' }
             }
             userStore.setCurrentUser(user)
           },
-          children:[{
-            path:'',
-            name:'admin-user-info',
-            component:()=> import('../views/admin/UserInfoView.vue')
-          },{
-            path:'level',
-            name:'admin-user-level',
-            component:()=> import('../views/admin/UserLevelView.vue') 
-            
-          },{
-            path:'edit',
-            name:'admin-user-edit',
-            component:()=> import('../views/admin/UserEditView.vue')
-          }
-            
-          ]
+          children: [
+            {
+              path: '',
+              name: 'admin-user-info',
+              component: () => import('../views/admin/UserInfoView.vue'),
+            },
+            {
+              path: 'level',
+              name: 'admin-user-level',
+              component: () => import('../views/admin/UserLevelView.vue'),
+            },
+            {
+              path: 'edit',
+              name: 'admin-user-edit',
+              component: () => import('../views/admin/UserEditView.vue'),
+            },
+          ],
         },
         {
           path: 'levels',
@@ -83,7 +84,7 @@ const router = createRouter({
         {
           path: 'levels/:id/edit',
           name: 'admin-level-edit',
-          component: ()=> import('../views/admin/LevelEditView.vue'),
+          component: () => import('../views/admin/LevelEditView.vue'),
           beforeEnter: loadLevel,
         },
         {
@@ -94,7 +95,7 @@ const router = createRouter({
       ],
     },
     {
-      path: '/exam/:levelId',
+      path: '/exam',
       name: 'exam',
       component: () => import('../views/exam/ExamView.vue'),
       meta: { requiresAuth: true, userOnly: true },
@@ -106,7 +107,7 @@ const router = createRouter({
       meta: { requiresAuth: true, userOnly: true },
     },
     {
-      path: '/learning/:levelId',
+      path: '/learning',
       name: 'learning',
       component: () => import('../views/eLearning/eLearningView.vue'),
       meta: { requiresAuth: true, userOnly: true },
