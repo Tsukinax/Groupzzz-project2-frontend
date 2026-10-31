@@ -45,14 +45,14 @@ async function handleLogout() {
           Profile
         </RouterLink>
         <RouterLink
-          :to="{ name: 'learning', params: { levelId: currentUser.level } }"
+          :to="{ name: 'learning' }"
           :class="linkClass"
           :active-class="activeClass"
         >
           E-Learning
         </RouterLink>
         <RouterLink
-          :to="{ name: 'exam', params: { levelId: currentUser.level } }"
+          :to="{ name: 'exam' }"
           :class="[linkClass, 'text-blue-400']"
           :active-class="activeClass"
         >
