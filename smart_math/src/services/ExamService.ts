@@ -13,6 +13,9 @@ export default {
   getHistory() {
     return apiClient.get<ExamAttempt[]>('/user/exam-history')
   },
+  getUserHistory(userId: number) {
+    return apiClient.get<ExamAttempt[]>('/admin/users/' + userId + '/exam-history')
+  },
   getElearning() {
     return apiClient.get<ElearningContent[]>('/user/elearning')
   },
