@@ -6,6 +6,8 @@ import { userRoutes } from './routes/user.routes'
 import type { RouteLocationNormalized } from 'vue-router'
 import LevelService from '@/services/LevelService'
 import { useLevelStore } from '@/stores/level'
+import AdminUserService from '@/services/AdminUserService'
+
 
 function loadLevel(to: RouteLocationNormalized) {
   const id = parseInt(to.params.id as string)
@@ -32,26 +34,32 @@ const router = createRouter({
       component: () => import('../views/admin/AdminLayout.vue'),
       meta: { requiresAuth: true, adminOnly: true },
       children: [
-        {
+                {
           path: 'users',
           name: 'admin-users',
           component: () => import('../views/admin/UserListView.vue'),
+          props: (route) => ({ page: parseInt(route.query.page?.toString() || '1') }),
         },
         {
           path: 'users/:id',
           name: 'admin-user',
           component: () => import('../views/admin/UserLayout.vue'),
-          beforeEnter: async (to) => {
+          beforeEnter: (to) => {
+            const id = parseInt(to.params.id as string)
             const userStore = useUserStore()
-            if (!userStore.isLoaded) {
-              await userStore.loadUsers()
-            }
-            const user = userStore.users.find((u) => u.id === Number(to.params.id))
-            if (!user) {
-              return { name: 'admin-users' }
-            }
-            userStore.setCurrentUser(user)
+            return AdminUserService.getUser(id)
+              .then((response) => {
+                userStore.setCurrentUser(response.data)
+              })
+              .catch((error) => {
+                if (error.response && error.response.status === 404) {
+                  return { name: '404-resource-view', params: { resource: 'user' } }
+                } else {
+                  return { name: 'network-error-view' }
+                }
+              })
           },
+
           children: [
             {
               path: '',
