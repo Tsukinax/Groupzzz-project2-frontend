@@ -1,62 +1,44 @@
 <script setup lang="ts">
-import { computed, onMounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { useExamStore } from '@/stores/exam'
-import { useAuthStore } from '@/stores/auth'
-import { useLevelStore } from '@/stores/level'
 
-const route = useRoute()
 const router = useRouter()
 const examStore = useExamStore()
-const authStore = useAuthStore()
-const levelStore = useLevelStore()
-
-const levelId = Number(route.params.levelId)
-
-const FALLBACK_PASS_SCORE = 60
 
 onMounted(async () => {
-  if (!levelStore.isLoaded) {
-    await levelStore.loadData()
+  try {
+    await examStore.loadExam()
+  } catch {
+    router.push({ name: 'network-error-view' })
   }
-  examStore.loadQuestion(levelId)
 })
 
-const allAnswered = computed(
-  () =>
-    examStore.questions.length > 0 &&
-    examStore.questions.every((q) => examStore.userAnswers[q.id] !== undefined),
-)
+const isSubmitting = ref(false)
 
-function handleSubmit() {
-  if (!allAnswered.value) {
-    return
+async function handleSubmit() {
+  if (!examStore.allAnswered || isSubmitting.value) return
+  isSubmitting.value = true
+  try {
+    await examStore.submitExam()
+    router.push({ name: 'exam-result' })
+  } catch {
+    router.push({ name: 'network-error-view' })
+  } finally {
+    isSubmitting.value = false
   }
-
-  const user = authStore.currentUser
-  if (user === null) {
-    router.push({ name: 'login' })
-    return
-  }
-
-  const level = levelStore.getLevelById(levelId)
-  const passScore = level ? level.pass_score : FALLBACK_PASS_SCORE
-
-  examStore.submitExam(user.id, levelId, passScore)
-
-  router.push({ name: 'exam-result' })
 }
 </script>
 
 <template>
-  <div v-if="examStore.currentQuestion" class="min-h-screen bg-zinc-900 px-6 py-10">
-    <div class="max-w-xl mx-auto">
-      <h1 class="text-2xl font-semibold text-white mb-1">Exam - Level {{ levelId }}</h1>
+  <div class="min-h-screen bg-zinc-900 px-6 py-10">
+    <div v-if="examStore.currentQuestion" class="max-w-xl mx-auto">
+      <h1 class="text-2xl font-semibold text-white mb-1">Level Exam</h1>
       <p class="text-slate-400 mb-6">
         Question {{ examStore.currentIndex + 1 }} of {{ examStore.totalQuestion }}
       </p>
 
-      <div class="bg-slate-800 border-slate-700 rounded-xl p-6 mb-6">
+      <div class="bg-slate-800 border border-slate-700 rounded-xl p-6 mb-6">
         <h2 class="text-lg text-white mb-5">
           {{ examStore.currentQuestion.question }}
         </h2>
@@ -78,7 +60,10 @@ function handleSubmit() {
         </div>
       </div>
 
-      <p v-if="examStore.isLastQuestion && !allAnswered" class="text-slate-400 text-sm mb-3">
+      <p
+        v-if="examStore.isLastQuestion && !examStore.allAnswered"
+        class="text-slate-400 text-sm mb-3"
+      >
         Please answer all questions before submit.
       </p>
 
@@ -86,7 +71,7 @@ function handleSubmit() {
         <button
           @click="examStore.previousQuestion()"
           :disabled="examStore.currentIndex === 0"
-          class="px-5 py-2.5 rounded-lg bg-zinc-800 border-slate-700 text-white disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-700"
+          class="px-5 py-2.5 rounded-lg bg-zinc-800 border border-slate-700 text-white disabled:opacity-40 disabled:cursor-not-allowed hover:bg-slate-700"
         >
           Previous
         </button>
@@ -102,12 +87,15 @@ function handleSubmit() {
         <button
           v-else
           @click="handleSubmit"
-          :disabled="!allAnswered"
+          :disabled="!examStore.allAnswered || isSubmitting"
           class="px-5 py-2.5 rounded-lg bg-blue-600 text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-blue-600"
         >
-          Submit
+          {{ isSubmitting ? 'Submitting...' : 'Submit' }}
         </button>
       </div>
     </div>
+
+    <p v-else-if="examStore.isLoading" class="text-center text-slate-400">Loading exam...</p>
+    <p v-else class="text-center text-slate-400">No exam questions found for your level.</p>
   </div>
 </template>

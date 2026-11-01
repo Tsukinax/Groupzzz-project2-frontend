@@ -1,15 +1,19 @@
 <script setup lang="ts">
 import { onMounted ,ref} from 'vue';
 import { useLevelStore } from '@/stores/level';
+import { useRouter } from 'vue-router'
 
 const levelStore=useLevelStore()
 const isLoading= ref(false)
+const router = useRouter()
 onMounted(async()=>{
     isLoading.value = true
     try{
-        if (!levelStore.isLoaded){
         await levelStore.loadData()
+    
     }
+    catch{
+        router.push({ name: 'network-error-view' })
     }finally{
         isLoading.value=false
     }
@@ -33,8 +37,9 @@ onMounted(async()=>{
                         <p class="text-zinc-400 text-sm mt-1">{{ level.description }}</p>
                     </div>
                     <div class="flex gap-2">
-                        <span class="bg-zinc-800 text-zinc-300 text-xs px-2 py-1 rounded-xl">pass: {{ level.pass_score }}</span>
-                        <span class="bg-zinc-800 text-zinc-300 text-xs px-2 py-1 rounded-xl">benefits: {{ levelStore.getBenefitsByLevel(level.id).length }}</span>
+                        <span class="bg-zinc-800 text-zinc-300 text-xs px-2 py-1 rounded-xl">pass: {{ level.passScore }}</span>
+                        <span class="bg-zinc-800 text-zinc-300 text-xs px-2 py-1 rounded-xl">benefits: {{ level.benefits.length }}</span>
+                        <span class="bg-zinc-800 text-zinc-300 text-xs px-2 py-1 rounded-xl">services: {{ level.services.length }}</span>
                         
                     </div>
             

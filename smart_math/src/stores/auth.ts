@@ -1,118 +1,74 @@
 import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
-import type { RegisterForm, User } from '@/types/user'
-import DataService from '@/services/DataService'
+import AuthService from '@/services/AuthService'
+import UserService from '@/services/UserService'
+import type { AuthResponse, LoginForm, RegisterForm, User } from '@/types/user'
 
-const START_LEVEL = 1
+const TOKEN_KEY = 'access_token'
+const USER_KEY = 'user'
 
-const MAX_LEVEL = 4
-
-const PROFILE_IMAGE_1 = '/images/profile1.jpg'
-const PROFILE_IMAGE_2 = '/images/profile2.jpg'
-
-const ADMIN_USER: User = {
-  id: 0,
-  username: 'admin',
-  name: 'Admin',
-  surname: 'System',
-  email: 'admin@example.com',
-  province: '-',
-  level: 4,
-  status: 'Active',
-  image: PROFILE_IMAGE_2,
-  badges: [],
+function loadStoredUser(): User | null {
+  const stored = localStorage.getItem(USER_KEY)
+  return stored ? (JSON.parse(stored) as User) : null
 }
 
 export const useAuthStore = defineStore('auth', () => {
-  const currentUser = ref<User | null>(null)
-  const registeredUsers = ref<User[]>([])
+  const token = ref<string | null>(localStorage.getItem(TOKEN_KEY))
+  const currentUser = ref<User | null>(loadStoredUser())
 
-  const users = ref<User[]>([])
-  const isLoaded = ref(false)
+  const isLoggedIn = computed(() => token.value !== null && currentUser.value !== null)
+  const isAdmin = computed(() => currentUser.value?.roles.includes('ROLE_ADMIN') ?? false)
+  const homeRoute = computed(() => ({ name: isAdmin.value ? 'admin-users' : 'user-home' }))
 
-  async function loadUsers() {
-    const response = await DataService.getData()
-    users.value = response.data.users
-    isLoaded.value = true
+  async function login(form: LoginForm) {
+    const response = await AuthService.login(form)
+    saveSession(response.data)
   }
 
-  const isLoggedIn = computed(() => currentUser.value !== null)
-  const isAdmin = computed(() => currentUser.value?.username === 'admin')
-  const isUser = computed(() => isLoggedIn.value && !isAdmin.value)
-
-  function isEmailTaken(email: string): boolean {
-    return registeredUsers.value.some((u) => u.email.toLowerCase() === email.toLowerCase())
+  async function register(form: RegisterForm) {
+    const response = await AuthService.register(form)
+    saveSession(response.data)
   }
 
-  function register(form: RegisterForm): User {
-    const isEvenTurn = registeredUsers.value.length % 2 === 0
+  async function fetchCurrentUser() {
+    const response = await UserService.getMe()
+    setCurrentUser(response.data)
+  }
 
-    const user: User = {
-      id: Date.now(), 
-      username: form.email.split('@')[0] || form.email,
-      name: form.name,
-      surname: form.surname,
-      email: form.email,
-      province: form.province,
-      level: START_LEVEL,
-      status: 'Active',
-      image: isEvenTurn ? PROFILE_IMAGE_1 : PROFILE_IMAGE_2,
-      badges: [],
-    }
+  async function logout() {
+    await AuthService.logout().catch(() => undefined)
+    clearSession()
+  }
 
-    registeredUsers.value.push(user)
+  function setCurrentUser(user: User) {
     currentUser.value = user
-    return user
+    localStorage.setItem(USER_KEY, JSON.stringify(user))
   }
 
-  function login(username: string): User | null {
-    if (username === ADMIN_USER.username) {
-      currentUser.value = ADMIN_USER
-      return currentUser.value
-    }
-
-    const fromDb = users.value.find((u) => u.username === username)
-    const fromRegistered = registeredUsers.value.find(
-      (u) => u.username === username || u.email === username,
-    )
-
-    currentUser.value = fromDb ?? fromRegistered ?? null
-    return currentUser.value
+  function saveSession(auth: AuthResponse) {
+    token.value = auth.token
+    localStorage.setItem(TOKEN_KEY, auth.token)
+    setCurrentUser(auth.user)
   }
 
-  function upgradeLevel(passedLevelId: number) {
-    const user = currentUser.value
-    if (user === null) {
-      return
-    }
-
-    if (!user.badges.includes(passedLevelId)) {
-      user.badges.push(passedLevelId)
-    }
-
-    const nextLevel = Math.min(passedLevelId + 1, MAX_LEVEL)
-    if (nextLevel > user.level) {
-      user.level = nextLevel
-    }
-  }
-
-  function logout() {
+  function clearSession() {
+    token.value = null
     currentUser.value = null
+    localStorage.removeItem(TOKEN_KEY)
+    localStorage.removeItem(USER_KEY)
   }
 
   return {
+    token,
     currentUser,
-    registeredUsers,
-    users,
-    isLoaded,
-    loadUsers,
     isLoggedIn,
     isAdmin,
-    isUser,
-    isEmailTaken,
-    register,
+    homeRoute,
     login,
-    upgradeLevel,
+    register,
+    fetchCurrentUser,
     logout,
+    setCurrentUser,
+    clearSession,
   }
 })

@@ -1,182 +1,191 @@
 <script setup lang="ts">
-import { computed, reactive, ref } from 'vue'
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import { useField, useForm } from 'vee-validate'
+import * as yup from 'yup'
+import InputText from '@/components/InputText.vue'
+import ImageUpload from '@/components/ImageUpload.vue'
+import ProvinceSelect from '@/components/ProvinceSelect.vue'
+import UploadService from '@/services/UploadService'
 import { useAuthStore } from '@/stores/auth'
-import type { RegisterForm, User } from '@/types/user'
+import { getErrorMessage } from '@/utils/errorMessage'
 
+interface RegisterValues {
+  username: string
+  password: string
+  confirmPassword: string
+  name: string
+  surname: string
+  email: string
+  province: string
+  image: File | null
+}
+
+const MAX_IMAGE_SIZE = 10 * 1024 * 1024
+
+const router = useRouter()
 const authStore = useAuthStore()
+const serverError = ref('')
 
-const PROVINCES = ['Chiang Mai', 'Bangkok', 'Phuket', 'Khon Kaen', 'Songkhla', 'Nakhon Ratchasima']
-const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-const MIN_PASSWORD_LENGTH = 6
-
-const form = reactive<RegisterForm>({
-  name: '',
-  surname: '',
-  email: '',
-  password: '',
-  province: '',
+const { errors, handleSubmit, isSubmitting } = useForm<RegisterValues>({
+  validationSchema: yup.object({
+    username: yup
+      .string()
+      .required('Please enter a username')
+      .min(4, 'The username must be at least 4 characters')
+      .max(30, 'The username must be at most 30 characters'),
+    password: yup
+      .string()
+      .required('Please enter a password')
+      .min(6, 'The password must be at least 6 characters'),
+    confirmPassword: yup
+      .string()
+      .required('Please confirm your password')
+      .oneOf([yup.ref('password')], 'The passwords do not match'),
+    name: yup.string().required('Please enter your name'),
+    surname: yup.string().required('Please enter your surname'),
+    email: yup.string().required('Please enter your email address').email('Invalid email format'),
+    province: yup.string().required('Please select a province'),
+    image: yup
+      .mixed<File>()
+      .required('Please choose a profile image')
+      .test('size', 'The image must be smaller than 10 MB', (file) => !file || file.size <= MAX_IMAGE_SIZE),
+  }),
+  initialValues: {
+    username: '',
+    password: '',
+    confirmPassword: '',
+    name: '',
+    surname: '',
+    email: '',
+    province: '',
+    image: null,
+  },
 })
 
-const submitted = ref(false)
+const { value: username } = useField<string>('username')
+const { value: password } = useField<string>('password')
+const { value: confirmPassword } = useField<string>('confirmPassword')
+const { value: name } = useField<string>('name')
+const { value: surname } = useField<string>('surname')
+const { value: email } = useField<string>('email')
+const { value: province } = useField<string>('province')
+const { value: image } = useField<File | null>('image')
 
-const registered = ref<User | null>(null)
-
-const errors = computed(() => {
-  const found: Partial<Record<keyof RegisterForm, string>> = {}
-
-  if (!form.name) found.name = 'Please enter your name'
-  if (!form.surname) found.surname = 'Please enter your surname'
-
-  if (!form.email) found.email = 'Please enter your email address'
-  else if (!EMAIL_PATTERN.test(form.email)) found.email = 'Invalid email format'
-  else if (authStore.isEmailTaken(form.email)) found.email = 'This email has already been used to sign up'
-
-  if (!form.password) found.password = 'Please enter your password'
-  else if (form.password.length < MIN_PASSWORD_LENGTH)
-    found.password = `The password must be at least ${MIN_PASSWORD_LENGTH} characters`
-
-  if (!form.province) found.province = 'Please select a province'
-
-  return found
+const onSubmit = handleSubmit(async (values) => {
+  serverError.value = ''
+  try {
+    const uploaded = await UploadService.uploadImage(values.image as File)
+    await authStore.register({
+      username: values.username,
+      password: values.password,
+      name: values.name,
+      surname: values.surname,
+      email: values.email,
+      province: values.province,
+      image: uploaded.data,
+    })
+    router.push(authStore.homeRoute)
+  } catch (error) {
+    serverError.value = getErrorMessage(error, 'Registration failed, please try again')
+  }
 })
-
-const isValid = computed(() => Object.keys(errors.value).length === 0)
 
 const labelClass = 'mb-1.5 block text-sm font-medium text-zinc-400'
-const errorClass = 'mt-1.5 text-sm text-red-400'
-
-function fieldClass(field: keyof RegisterForm) {
-  const base =
-    'w-full rounded-lg border bg-zinc-950 px-3 py-2.5 text-zinc-100 ' +
-    'placeholder:text-zinc-600 focus:outline-none'
-  const invalid = submitted.value && errors.value[field]
-  return `${base} ${invalid ? 'border-red-500' : 'border-zinc-700 focus:border-blue-500'}`
-}
-
-function handleSubmit() {
-  submitted.value = true
-  if (!isValid.value) return
-
-  registered.value = authStore.register(form)
-}
 </script>
 
 <template>
   <main class="flex min-h-screen items-center justify-center bg-zinc-900 px-4 py-10">
     <div class="w-full max-w-lg">
       <header class="mb-8 text-center">
-        <h1 class="text-3xl font-bold text-white">Smart Math Passport</h1>
-        <p class="mt-2 text-zinc-400">Sign up to get started at Level 1</p>
+        <RouterLink :to="{ name: 'landing' }" class="text-sm text-zinc-500 hover:text-zinc-300">
+          Smart Math Passport
+        </RouterLink>
+        <h1 class="mt-2 text-3xl font-bold text-white">Create your passport</h1>
+        <p class="mt-2 text-zinc-400">Everyone starts at Level 1</p>
       </header>
 
-      <section
-        v-if="registered"
-        class="rounded-xl border border-zinc-800 bg-zinc-900/80 p-6 text-center shadow-xl sm:p-8"
-      >
-        <img
-          :src="registered.image"
-          :alt="registered.name"
-          class="mx-auto h-20 w-20 rounded-full border-2 border-blue-500"
-        />
-
-        <h2 class="mt-4 text-xl font-semibold text-white">Registration successful</h2>
-        <p class="mt-1 text-zinc-400">{{ registered.name }} {{ registered.surname }}</p>
-
-        <p class="mt-4 inline-block rounded-full bg-blue-600 px-4 py-1.5 font-medium text-white">
-          Level {{ registered.level }}
-        </p>
-
-        <dl class="mt-6 space-y-2 text-left text-sm">
-          <div class="flex justify-between border-b border-zinc-800 pb-2">
-            <dt class="text-zinc-500">Email</dt>
-            <dd class="text-zinc-200">{{ registered.email }}</dd>
-          </div>
-          <div class="flex justify-between border-b border-zinc-800 pb-2">
-            <dt class="text-zinc-500">Province</dt>
-            <dd class="text-zinc-200">{{ registered.province }}</dd>
-          </div>
-          <div class="flex justify-between">
-            <dt class="text-zinc-500">Status</dt>
-            <dd class="text-green-400">{{ registered.status }}</dd>
-          </div>
-        </dl>
-
-        <p class="mt-6 text-sm text-zinc-500">
-          Start at Level 1 — pass the exam to advance your level and unlock additional services and benefits.
-        </p>
-      </section>
-
       <form
-        v-else
-        class="rounded-xl border border-zinc-800 bg-zinc-900/80 p-6 shadow-xl sm:p-8"
+        class="space-y-4 rounded-xl border border-zinc-800 bg-zinc-900/80 p-6 shadow-xl sm:p-8"
         novalidate
-        @submit.prevent="handleSubmit"
+        @submit.prevent="onSubmit"
       >
+        <div>
+          <span :class="labelClass">Profile image</span>
+          <ImageUpload id="image" v-model="image" :error="errors.image" />
+        </div>
+
         <div class="grid gap-4 sm:grid-cols-2">
           <div>
             <label for="name" :class="labelClass">Name</label>
-            <input
-              id="name"
-              v-model.trim="form.name"
-              :class="fieldClass('name')"
-              placeholder="Somchai"
-            />
-            <p v-if="submitted && errors.name" :class="errorClass">{{ errors.name }}</p>
+            <InputText id="name" v-model="name" :error="errors.name" placeholder="Somchai" />
           </div>
-
           <div>
             <label for="surname" :class="labelClass">Surname</label>
-            <input
-              id="surname"
-              v-model.trim="form.surname"
-              :class="fieldClass('surname')"
-              placeholder="Jaidee"
-            />
-            <p v-if="submitted && errors.surname" :class="errorClass">{{ errors.surname }}</p>
+            <InputText id="surname" v-model="surname" :error="errors.surname" placeholder="Jaidee" />
           </div>
         </div>
 
-        <div class="mt-4">
+        <div>
           <label for="email" :class="labelClass">Email</label>
-          <input
+          <InputText
             id="email"
-            v-model.trim="form.email"
+            v-model="email"
             type="email"
-            :class="fieldClass('email')"
+            :error="errors.email"
             placeholder="somchai@example.com"
           />
-          <p v-if="submitted && errors.email" :class="errorClass">{{ errors.email }}</p>
         </div>
 
-        <div class="mt-4">
-          <label for="password" :class="labelClass">Password</label>
-          <input
-            id="password"
-            v-model="form.password"
-            type="password"
-            :class="fieldClass('password')"
-            placeholder="At least 6 characters"
-          />
-          <p v-if="submitted && errors.password" :class="errorClass">{{ errors.password }}</p>
-        </div>
-
-        <div class="mt-4">
+        <div>
           <label for="province" :class="labelClass">Province</label>
-          <select id="province" v-model="form.province" :class="fieldClass('province')">
-            <option value="" disabled>Select province</option>
-            <option v-for="province in PROVINCES" :key="province" :value="province">
-              {{ province }}
-            </option>
-          </select>
-          <p v-if="submitted && errors.province" :class="errorClass">{{ errors.province }}</p>
+          <ProvinceSelect id="province" v-model="province" :error="errors.province" />
         </div>
+
+        <div>
+          <label for="username" :class="labelClass">Username</label>
+          <InputText id="username" v-model="username" :error="errors.username" placeholder="somchai" />
+        </div>
+
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label for="password" :class="labelClass">Password</label>
+            <InputText
+              id="password"
+              v-model="password"
+              type="password"
+              :error="errors.password"
+              placeholder="At least 6 characters"
+            />
+          </div>
+          <div>
+            <label for="confirmPassword" :class="labelClass">Confirm password</label>
+            <InputText
+              id="confirmPassword"
+              v-model="confirmPassword"
+              type="password"
+              :error="errors.confirmPassword"
+              placeholder="Type it again"
+            />
+          </div>
+        </div>
+
+        <p v-if="serverError" class="rounded-lg bg-red-950 px-3 py-2 text-sm text-red-400">
+          {{ serverError }}
+        </p>
 
         <button
           type="submit"
-          class="mt-6 w-full rounded-lg bg-blue-600 px-4 py-2.5 font-medium text-white transition hover:bg-blue-500"
+          :disabled="isSubmitting"
+          class="w-full rounded-lg bg-blue-600 px-4 py-2.5 font-medium text-white transition hover:bg-blue-500 disabled:opacity-60"
         >
-          Sign Up
+          {{ isSubmitting ? 'Creating account...' : 'Sign Up' }}
         </button>
+
+        <p class="text-center text-sm text-zinc-500">
+          Already have an account?
+          <RouterLink :to="{ name: 'login' }" class="text-blue-400 hover:underline">Login</RouterLink>
+        </p>
       </form>
     </div>
   </main>

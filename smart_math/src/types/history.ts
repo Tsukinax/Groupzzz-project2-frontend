@@ -1,8 +1,7 @@
 export interface ExamAttempt {
   id: number
-  user_id: number
-  level_id: number
   score: number
-  result: 'pass' | 'fail'
-  taken_at: string
+  passed: boolean
+  attemptedAt: string
+  level: { id: number; name: string }
 }

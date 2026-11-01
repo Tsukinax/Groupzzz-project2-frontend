@@ -15,6 +15,8 @@ onUnmounted(()=> userStore.clearCurrentUser());
                 <h1 class="text-white text-2xl">{{userStore.currentUser.name}}</h1>
                 <span class="px-2.5 py-0.5 bg-blue-500 text-white rounded-xl">L{{ userStore.currentUser.level }}</span>
                 <span class="text-zinc-400">{{userStore.currentUser.province}}</span>
+                <span :class="userStore.currentUser.status === 'Active' ? 'text-green-400' : 'text-red-400'">{{ userStore.currentUser.status === 'Active' ? 'Active' : 'Deactivated' }}</span>
+
 
             </div>
             <div class="flex gap-6 border-b border-zinc-800 mb-6">
