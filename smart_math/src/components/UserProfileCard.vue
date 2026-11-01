@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { PropType } from 'vue'
+import { ref, type PropType } from 'vue'
 import type { User } from '@/types/user'
 
 defineProps({
@@ -18,6 +18,13 @@ defineProps({
 })
 
 const emit = defineEmits(['toggle-status'])
+const isConfirming = ref(false)
+
+function confirmToggle(id: number) {
+  isConfirming.value = false
+  emit('toggle-status', id)
+}
+
 </script>
 
 <template>
@@ -62,12 +69,27 @@ const emit = defineEmits(['toggle-status'])
     <div class="flex items-center">
       <span class="text-zinc-400 w-32">Status</span>
       <span :class="user.status === 'Active' ? 'text-green-400' : 'text-red-400'">{{ user.status }}</span>
-      <button
-        v-if="showStatusToggle"
-        @click="emit('toggle-status', user.id)"
-        class="ml-4 px-3 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-600 rounded-lg">
-        {{ user.status === 'Active' ? 'Deactivate' : 'Activate' }}
-      </button>
+      <template v-if="showStatusToggle">
+        <button
+          v-if="!isConfirming"
+          @click="isConfirming = true"
+          class="ml-4 px-3 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-600 rounded-lg">
+          {{ user.status === 'Active' ? 'Deactivate' : 'Activate' }}
+        </button>
+        <template v-else>
+          <button
+            @click="confirmToggle(user.id)"
+            :class="user.status === 'Active' ? 'bg-red-600 hover:bg-red-500' : 'bg-green-600 hover:bg-green-500'"
+            class="ml-4 px-3 text-white rounded-lg">
+            {{ user.status === 'Active' ? 'Confirm deactivate' : 'Confirm activate' }}
+          </button>
+          <button
+            @click="isConfirming = false"
+            class="ml-2 px-3 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 border border-zinc-600 rounded-lg">
+            Cancel
+          </button>
+        </template>
+      </template>
     </div>
   </div>
 </template>
